@@ -33,5 +33,9 @@ grupoBotones[15] = new JButton("C");
         		this.add(boton);
     	}
 	}
+
+    public JButton[] getGrupoBotones() {
+        return grupoBotones;
+    }
 }
 
