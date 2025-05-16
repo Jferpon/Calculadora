@@ -14,11 +14,17 @@ public class Panel extends JPanel implements ActionListener{
 	private PanelBotones botonera;
 	private JTextArea areaTexto;
 	private int tipoOperacion;
+    private double primerOperando;
+    private boolean esperandoSegundoOperando;
+
     
 	// Constructor
 	public Panel(){
     		initComponents();
     		tipoOperacion = -1; // No hay operaciones en la calculadora
+            primerOperando = 0;
+            esperandoSegundoOperando = false;
+    
 	}
     
 	// Se inicializan los componentes gráficos y se colocan en el panel
@@ -44,15 +50,78 @@ public class Panel extends JPanel implements ActionListener{
 	}
     @Override
     public void actionPerformed(ActionEvent ae) {
-	// Se obtiene el objeto que desencadena el evento
         Object o = ae.getSource();
-	// Si es un botón
         if (o instanceof JButton){
-            System.out.println(((JButton) o).getText());
-            areaTexto.setText(((JButton) o).getText());
+            String textoBoton = ((JButton) o).getText();
+
+            switch (textoBoton) {
+                case "+":
+                    guardarOperando(1);
+                    break;
+                case "-":
+                    guardarOperando(2);
+                    break;
+                case "*":
+                    guardarOperando(3);
+                    break;
+                case "/":
+                    guardarOperando(4);
+                    break;
+                case "=":
+                    realizarOperacion();
+                    break;
+                case "C":
+                    areaTexto.setText("");
+                    primerOperando = 0;
+                    tipoOperacion = -1;
+                    esperandoSegundoOperando = false;
+                    break;
+                default: // números
+                    if (esperandoSegundoOperando) {
+                        areaTexto.setText(textoBoton);
+                        esperandoSegundoOperando = false;
+                    } else {
+                        areaTexto.append(textoBoton);
+                    }
+                    break;
+            }
         }
-	
-	// RESTO DEL CÓDIGO DE LA LÓGICA DE LA CALCULADORA
+    }    private void guardarOperando(int tipo) {
+        try {
+            primerOperando = Double.parseDouble(areaTexto.getText());
+            tipoOperacion = tipo;
+            esperandoSegundoOperando = true;
+        } catch (NumberFormatException e) {
+            areaTexto.setText("Error");
+        }
     }
 
+    private void realizarOperacion() {
+        try {
+            double segundoOperando = Double.parseDouble(areaTexto.getText());
+            double resultado = 0;
+            switch (tipoOperacion) {
+                case 1: resultado = primerOperando + segundoOperando; break;
+                case 2: resultado = primerOperando - segundoOperando; break;
+                case 3: resultado = primerOperando * segundoOperando; break;
+                case 4:
+                    if (segundoOperando == 0) {
+                        areaTexto.setText("División por 0");
+                        return;
+                    } else {
+                        resultado = primerOperando / segundoOperando;
+                    }
+                    break;
+                default: return;
+            }
+            areaTexto.setText(Double.toString(resultado));
+            esperandoSegundoOperando = false;
+        } catch (NumberFormatException e) {
+            areaTexto.setText("Error");
+        }
+    }
 }
+
+
+
+
