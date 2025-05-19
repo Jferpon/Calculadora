@@ -116,8 +116,32 @@ public class Panel extends JPanel implements ActionListener{
                     break;
                 default: return;
             }
-            areaTexto.setText(Double.toString(resultado));
-            esperandoSegundoOperando = false;
+            // Segun el tipo de Operacion se muestra el resultado de una manera diferente 
+            if (tipoOperacion >= 1 && tipoOperacion <= 4) {
+                switch (tipoOperacion) {
+                    case 1:
+                    areaTexto.setText( primerOperando + " "+  "+" + segundoOperando + "=" + Double.toString(resultado));
+                    esperandoSegundoOperando = false;
+                        break;
+                        case 2:
+                        areaTexto.setText( primerOperando + " "+  "-" + segundoOperando + "=" + Double.toString(resultado));
+                        esperandoSegundoOperando = false;
+                        break;
+                        case 3:
+                        areaTexto.setText( primerOperando + " "+  "*" + segundoOperando + "=" + Double.toString(resultado));
+                        esperandoSegundoOperando = false;
+                        break;
+
+                        case 4:
+                        areaTexto.setText( primerOperando + " "+  "/" + segundoOperando + "=" + Double.toString(resultado));
+                        esperandoSegundoOperando = false;
+                        break;
+                
+                    default:
+                        break;
+                }
+            }
+           
         } catch (NumberFormatException e) {
             areaTexto.setText("Error");
         }
