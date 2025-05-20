@@ -79,13 +79,12 @@ public class Panel extends JPanel implements ActionListener{
                     esperandoSegundoOperando = false;
                     break;
                 default: // números
-                    if (esperandoSegundoOperando) {
-                        areaTexto.setText(textoBoton);
-                        esperandoSegundoOperando = false;
-                    } else {
-                        areaTexto.append(textoBoton);
-                    }
-                    break;
+                if (esperandoSegundoOperando) {
+                    areaTexto.append(textoBoton); // Agrega el número detrás del símbolo
+                    esperandoSegundoOperando = false;
+                } else {
+                    areaTexto.append(textoBoton);
+                }
             }
         }
     }    private void guardarOperando(int tipo) {
@@ -93,6 +92,18 @@ public class Panel extends JPanel implements ActionListener{
             primerOperando = Double.parseDouble(areaTexto.getText());
             tipoOperacion = tipo;
             esperandoSegundoOperando = true;
+    
+            // Mostrar el símbolo de la operación
+            String simbolo = switch (tipo) {
+                case 1 -> "+";
+                case 2 -> "-";
+                case 3 -> "*";
+                case 4 -> "/";
+                default -> "";
+            };
+    
+            areaTexto.setText(primerOperando + " " + simbolo + " "); // muestra "1 + " por ejemplo
+    
         } catch (NumberFormatException e) {
             areaTexto.setText("Error");
         }
@@ -100,7 +111,13 @@ public class Panel extends JPanel implements ActionListener{
 
     private void realizarOperacion() {
         try {
-            double segundoOperando = Double.parseDouble(areaTexto.getText());
+            String texto = areaTexto.getText().trim();
+            String[] partes = texto.split(" ");
+            if (partes.length < 3) {
+                areaTexto.setText("Faltan operandos");
+                return;
+            }
+            double segundoOperando = Double.parseDouble(partes[2]);
             double resultado = 0;
             switch (tipoOperacion) {
                 case 1: resultado = primerOperando + segundoOperando; break;
